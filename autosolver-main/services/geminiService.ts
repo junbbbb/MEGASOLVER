@@ -55,10 +55,9 @@ UNKNOWN
         ],
       },
       config: {
-        // Budget for thinking tokens. 1024 is a sweet spot for quiz reasoning without being too slow.
-        thinkingConfig: { thinkingBudget: 1024 },
-        // Total output limit (Thinking + Actual Answer)
+        // Optimized: Removed thinkingConfig to prevent quota exhaustion on Preview models
         maxOutputTokens: 2048,
+        temperature: 0.5,
       }
     });
 
