@@ -37,7 +37,6 @@ UNKNOWN
 ---SPLIT---
 화면의 글자가 너무 흐릿하여 문제를 읽을 수 없습니다. 카메라 초점을 맞추거나 화면을 더 가까이 비춰주세요.`;
 
-    // Create the API request promise
     // Strategy: Use 'gemini-2.5-flash' for SPEED, but enable 'thinkingConfig' for ACCURACY.
     // This allows the fast model to "think" before answering, simulating Pro-level reasoning with Flash-level latency.
     const apiCall = ai.models.generateContent({
@@ -71,20 +70,7 @@ UNKNOWN
 
     // Race the API call against the timeout
     const response = await Promise.race([apiCall, timeoutCall]) as any;
-
-    const fullText = response.text || "분석 결과를 찾을 수 없습니다.";
-    const parts = fullText.split('---SPLIT---');
-
-    let text = parts[0].trim(); // 정답 부분
-
-    // Clean up answer text (remove markdown bolding, extra spaces, periods)
-    text = text.replace(/\*\*/g, '').replace(/\./g, '').trim();
-
-    const reasoning = parts.length > 1 ? parts[1].trim() : "상세 풀이를 생성하지 못했습니다."; // 풀이 부분
-
-    const sources: { uri: string; title: string }[] = [];
-
-    return { text, reasoning, sources };
+    return parseResponse(response);
 
   } catch (error: any) {
     console.error("Gemini API Error:", error);
@@ -100,4 +86,13 @@ UNKNOWN
       sources: []
     };
   }
+};
+
+// Helper to parse the text response
+const parseResponse = (response: any) => {
+  const fullText = response.text || "분석 결과를 찾을 수 없습니다.";
+  const parts = fullText.split('---SPLIT---');
+  let text = parts[0].trim().replace(/\*\*/g, '').replace(/\./g, '').trim();
+  const reasoning = parts.length > 1 ? parts[1].trim() : "상세 풀이를 생성하지 못했습니다.";
+  return { text, reasoning, sources: [] };
 }; 
