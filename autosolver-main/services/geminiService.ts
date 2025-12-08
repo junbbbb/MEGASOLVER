@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { GroundingChunk } from "../types";
 
-const apiKey = import.meta.env.VITE_API_KEY || "";
+const apiKey = process.env.GEMINI_API_KEY || "";
 const ai = new GoogleGenAI({ apiKey });
 
 export const solveProblemFromImage = async (base64Image: string): Promise<{ text: string; reasoning: string; sources: { uri: string; title: string }[] }> => {
